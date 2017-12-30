@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+{% if url_list %}
+  <ul>
+    {% for url in url_list %}
+      <li><a href="{% url url.name %}">{{url.name}}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p> you passed the wrong list buddy </p>
+{% endif %}
+{% endblock %}

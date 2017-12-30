@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <link rel ="stylesheet" type = "text/css" href="{% static "Reader/style2.css" %}" />
+  <title>{% block title %} !!! Siteo {% endblock %} </title>
+</head>
+
+<body>
+  <div id="main">
+    {% block main %}
+    {% endblock %}
+  </div>
+</body>
+</html>

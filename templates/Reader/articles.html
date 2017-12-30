@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block main %}
+<div = id="articles">
+{% if article_list %}
+    {% for article in article_list %}
+        <div class="article">
+          {% autoescape off %}{{article}}{% endautoescape %}
+        </div>
+    {% endfor %}
+{% else %}
+  <p> you passed the wrong list buddy </p>
+{% endif %}
+</div>
+{% endblock %}
