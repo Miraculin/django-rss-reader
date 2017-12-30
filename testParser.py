@@ -10,7 +10,7 @@ testDoc2 = '/PROJECT_ROOT/test_ANN.xml'
 
 
 storyStore = []
-content_cache = {}
+contentCache = {}
 class Channel:
     '''class representing the source channel'''
 
@@ -63,11 +63,11 @@ def parseXml(doc):
         date = child.find("pubDate").text
         if child.find("{http://purl.org/rss/1.0/modules/content/}encoded") != None:
             content = child.find("{http://purl.org/rss/1.0/modules/content/}encoded").text
-        elif link not in content_cache:
+        elif link not in contentCache:
             content = parseHtmlContent(link)
-            content_cache.update({link:content})
+            contentCache.update({link:content})
         else:
-            content = content_cache[link]
+            content = contentCache[link]
         tempObject = RssObject( title, link, desc, date, content, channelObj)
         storyStore.append(tempObject)
     return storyStore
@@ -79,19 +79,25 @@ def parseHtmlContent(doc):
     body = root.find_class("KonaBody")[0]
     content = ""
     for imageElement in body.findall(r".//img"):
-        if r"data-src" in imageElement.attrib:
-            print(imageElement.get(r"data-src"))
-            image = urllib.parse.urljoin(doc, imageElement.get("data-src"))
-        else:
-            image = urllib.parse.urljoin(doc, imageElement.get("src"))
+        image = imageNetlink(doc, imageElement)
         content = "<p><img src={} class=\"splash\"></p>".format(image)
     text = ""
     for p in body.findall(r".//p"):
-        #TODO: find img fix their path
+        for img in p.findall(r".//img"):
+            image = imageNetlink(doc, img)
+            newImg = lxml.html.fromstring("<img src={}>".format(image))
+            p.replace(img,newImg)
         text+=lxml.html.tostring(p).decode("utf-8")
     content+=text
     return content
 
+def imageNetlink(doc, elm):
+    if r"data-src" in elm.attrib:
+        print(elm.get(r"data-src"))
+        image = urllib.parse.urljoin(doc, elm.get("data-src"))
+    else:
+        image = urllib.parse.urljoin(doc, elm.get("src"))
+    return image
 if(__name__ == "__main__"):
     parseXml(testDoc2)
     print(storyStore[0].parseContent())

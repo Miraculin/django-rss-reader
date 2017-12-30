@@ -30,8 +30,8 @@ def testArticle(request):
     with open(os.path.join(settings.PROJECT_ROOT,'articles.txt'),"a") as f:
         for article in articles:
             if not(article.getContent() in article_list):
-                article_list.append(article.getContent())
-                f.write("{}\n".format(article.getContent()))
+                article_list.append("<h2>{}</h2>".format(article.getTitle())+article.getContent())
+                f.write("{}\n".format("<h2>{}</h2>".format(article.getTitle())+article.getContent()))
     template = loader.get_template('Reader/articles.html')
     context = {"article_list":article_list}
     print(article_list)
