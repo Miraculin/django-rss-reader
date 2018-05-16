@@ -19,7 +19,7 @@ def current_datetime(request):
 
 def index(request):
     url_list = urls.urlpatterns
-    template = loader.get_template('Reader/index.html')
+    template = loader.get_template('rssReader/index.html')
     context = {"url_list":url_list}
     return HttpResponse(template.render(context, request))
 
@@ -32,7 +32,7 @@ def testArticle(request):
             if not(article.getContent() in article_list):
                 article_list.append("<h2>{}</h2>".format(article.getTitle())+article.getContent())
                 f.write("{}\n".format("<h2>{}</h2>".format(article.getTitle())+article.getContent()))
-    template = loader.get_template('Reader/articles.html')
+    template = loader.get_template('rssReader/articles.html')
     context = {"article_list":article_list}
     print(article_list)
     return HttpResponse(template.render(context,request))

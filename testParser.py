@@ -4,57 +4,58 @@ import urllib.request
 import urllib.parse
 import json
 import os
-
+from rssReader.models import Channel,RssObject
 testDoc = '/PROJECT_ROOT/test_ars.xml'
 testDoc2 = '/PROJECT_ROOT/test_ANN.xml'
 
 
 storyStore = []
 contentCache = {}
-class Channel:
-    '''class representing the source channel'''
-
-    def __init__(self, title, link, desc, lastDate):
-        self.title = title
-        self.link = link
-        self.desc = desc
-        self.lastDate = lastDate
-
-class RssObject:
-    '''Object to represent a parsed \"story\"'''
-
-    def __init__(self,  title, link, desc, pubDate, content, channel):
-        self.title = title
-        self.link = link
-        self.desc = desc
-        self.pubDate = pubDate
-        self.content = content
-        self.channel = channel
-
-    def testPrint(self):
-        print(self.content)
-
-    def getTitle(self):
-        return self.title
-
-    def getLink(self):
-        return self.link
-
-    def getDesc(self):
-        return self.desc
-
-    def getPubDate(self):
-        return self.pubDate
-
-    def getContent(self):
-        htmlDoc = self.content
-        return(htmlDoc)
+# class Channel:
+#     '''class representing the source channel'''
+#
+#     def __init__(self, title, link, desc, lastDate):
+#         self.title = title
+#         self.link = link
+#         self.desc = desc
+#         self.lastDate = lastDate
+#
+# class RssObject:
+#     '''Object to represent a parsed \"story\"'''
+#
+#     def __init__(self,  title, link, desc, pubDate, content, channel):
+#         self.title = title
+#         self.link = link
+#         self.desc = desc
+#         self.pubDate = pubDate
+#         self.content = content
+#         self.channel = channel
+#
+#     def testPrint(self):
+#         print(self.content)
+#
+#     def getTitle(self):
+#         return self.title
+#
+#     def getLink(self):
+#         return self.link
+#
+#     def getDesc(self):
+#         return self.desc
+#
+#     def getPubDate(self):
+#         return self.pubDate
+#
+#     def getContent(self):
+#         htmlDoc = self.content
+#         return(htmlDoc)
 
 def parseXml(doc):
     tree = etree.parse(doc)
     root = tree.getroot()
     channel = root.find("channel")
-    channelObj = Channel(channel.find("title"), channel.find("link"), channel.find("description"), channel.find("lastBuildDate"))
+    channelObj = Channel(title=channel.find("title"), link=channel.find("link"), desc=channel.find("description"), lastDate=channel.find("lastBuildDate"))
+    channelObj.save()
     items = root.findall(r".//item")
     for child in items:
         title = child.find("title").text
@@ -68,7 +69,8 @@ def parseXml(doc):
             contentCache.update({link:content})
         else:
             content = contentCache[link]
-        tempObject = RssObject( title, link, desc, date, content, channelObj)
+        tempObject = RssObject(title=title, link=link, desc=desc, date=date, content=content, channel=channelObj)
+        tempObject.save()
         storyStore.append(tempObject)
     return storyStore
 
@@ -78,8 +80,9 @@ def parseHtmlContent(doc):
     root = tree.getroot()
     body = root.find_class("KonaBody")[0]
     content = ""
-    for imageElement in body.findall(r".//img"):
-        image = imageNetlink(doc, imageElement)
+    match = body.find(r".//img")
+    if match!=None:
+        image = imageNetlink(doc, match)
         content = "<p><img src={} class=\"splash\"></p>".format(image)
     text = ""
     for p in body.findall(r".//p"):
@@ -98,6 +101,7 @@ def imageNetlink(doc, elm):
     else:
         image = urllib.parse.urljoin(doc, elm.get("src"))
     return image
+
 if(__name__ == "__main__"):
     parseXml(testDoc2)
     print(storyStore[0].parseContent())

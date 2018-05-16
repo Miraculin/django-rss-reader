@@ -1,11 +1,15 @@
+body{
+  margin: 0;
+  padding: 0;
+}
 #main{
-  background-color: white;
+  background-color: #D2D3D5;
 }
 #articles{
   column-width: 35em;
 }
 .article{
-  background-color: grey;
+  background-color: #55C1FF;
   width: 90%;
   position: relative;
   word-wrap: break-word;
