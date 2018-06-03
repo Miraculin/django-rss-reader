@@ -6,7 +6,9 @@ body{
   background-color: #D2D3D5;
 }
 #articles{
-  column-width: 35em;
+  /*column-width: 35em;*/
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(35em, 1fr));
 }
 .article{
   background-color: #55C1FF;

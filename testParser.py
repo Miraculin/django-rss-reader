@@ -4,64 +4,29 @@ import urllib.request
 import urllib.parse
 import json
 import os
+from datetime import datetime
 from rssReader.models import Channel,RssObject
 testDoc = '/PROJECT_ROOT/test_ars.xml'
 testDoc2 = '/PROJECT_ROOT/test_ANN.xml'
 
-
 storyStore = []
 contentCache = {}
-# class Channel:
-#     '''class representing the source channel'''
-#
-#     def __init__(self, title, link, desc, lastDate):
-#         self.title = title
-#         self.link = link
-#         self.desc = desc
-#         self.lastDate = lastDate
-#
-# class RssObject:
-#     '''Object to represent a parsed \"story\"'''
-#
-#     def __init__(self,  title, link, desc, pubDate, content, channel):
-#         self.title = title
-#         self.link = link
-#         self.desc = desc
-#         self.pubDate = pubDate
-#         self.content = content
-#         self.channel = channel
-#
-#     def testPrint(self):
-#         print(self.content)
-#
-#     def getTitle(self):
-#         return self.title
-#
-#     def getLink(self):
-#         return self.link
-#
-#     def getDesc(self):
-#         return self.desc
-#
-#     def getPubDate(self):
-#         return self.pubDate
-#
-#     def getContent(self):
-#         htmlDoc = self.content
-#         return(htmlDoc)
 
 def parseXml(doc):
     tree = etree.parse(doc)
     root = tree.getroot()
     channel = root.find("channel")
-    channelObj = Channel(title=channel.find("title"), link=channel.find("link"), desc=channel.find("description"), lastDate=channel.find("lastBuildDate"))
+    dateText = channel.find("lastBuildDate").text
+    lastDatetime = datetime.strptime(dateText, '%a, %d %b %Y %H:%M:%S %z')
+    channelObj = Channel(title=channel.find("title"), link=channel.find("link"), desc=channel.find("description"), lastDate=lastDatetime)
     channelObj.save()
     items = root.findall(r".//item")
     for child in items:
         title = child.find("title").text
         link = child.find("link").text
         desc = child.find("description").text
-        date = child.find("pubDate").text
+        dateText = child.find("pubDate").text
+        date = datetime.strptime(dateText, '%a, %d %b %Y %H:%M:%S %z')
         if child.find("{http://purl.org/rss/1.0/modules/content/}encoded") != None:
             content = child.find("{http://purl.org/rss/1.0/modules/content/}encoded").text
         elif link not in contentCache:
@@ -69,7 +34,7 @@ def parseXml(doc):
             contentCache.update({link:content})
         else:
             content = contentCache[link]
-        tempObject = RssObject(title=title, link=link, desc=desc, date=date, content=content, channel=channelObj)
+        tempObject = RssObject(title=title, link=link, desc=desc, pubDate=date, content=content, channel=channelObj)
         tempObject.save()
         storyStore.append(tempObject)
     return storyStore

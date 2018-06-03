@@ -29,9 +29,9 @@ def testArticle(request):
     article_list = []
     with open(os.path.join(settings.PROJECT_ROOT,'articles.txt'),"a") as f:
         for article in articles:
-            if not(article.getContent() in article_list):
-                article_list.append("<h2>{}</h2>".format(article.getTitle())+article.getContent())
-                f.write("{}\n".format("<h2>{}</h2>".format(article.getTitle())+article.getContent()))
+            if not(article.content in article_list):
+                article_list.append("<h2>{}</h2>".format(article.title)+article.content)
+                f.write("{}\n".format("<h2>{}</h2>".format(article.title)+article.content))
     template = loader.get_template('rssReader/articles.html')
     context = {"article_list":article_list}
     print(article_list)

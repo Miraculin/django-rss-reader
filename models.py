@@ -7,7 +7,7 @@ class Channel(models.Model):
     desc = models.CharField(max_length=200)
     lastDate = models.DateTimeField()
 
-class RssObject:
+class RssObject(models.Model):
     title = models.CharField(max_length=255)
     link = models.URLField()
     desc = models.CharField(max_length=200)
