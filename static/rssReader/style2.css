@@ -5,12 +5,14 @@ body{
 #main{
   background-color: #D2D3D5;
 }
-#articles{
+.article-container{
   /*column-width: 35em;*/
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(35em, 1fr));
+  /*grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));*/
+  grid-template-columns: repeat(auto-fit, 250px);
 }
 .article{
+  display:grid;
   background-color: #55C1FF;
   width: 90%;
   position: relative;

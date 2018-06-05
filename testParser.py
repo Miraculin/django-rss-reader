@@ -49,9 +49,10 @@ def parseHtmlContent(doc):
     if match!=None:
         image = imageNetlink(doc, match)
         content = "<p><img src={} class=\"splash\"></p>".format(image)
+        match.getparent().remove(match)
     text = ""
     for p in body.findall(r".//p"):
-        for img in p.findall(r".//img"):
+        for img in p.findall(r".//img")[1:]:
             image = imageNetlink(doc, img)
             newImg = lxml.html.fromstring("<img src={}>".format(image))
             p.replace(img,newImg)
@@ -66,6 +67,10 @@ def imageNetlink(doc, elm):
     else:
         image = urllib.parse.urljoin(doc, elm.get("src"))
     return image
+
+def truncateArticle(content):
+    #TODO
+    pass
 
 if(__name__ == "__main__"):
     parseXml(testDoc2)
