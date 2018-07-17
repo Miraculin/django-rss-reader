@@ -3,10 +3,12 @@ from django.template import loader
 from django.http import HttpResponse
 import datetime
 from . import urls
-from . import testParser
+from . import parser
+from . import html_utils as utils
 from lxml import etree
 import os
 from django.conf import settings
+from rssReader.models import Channel,RssObject
 
 from django.views.decorators.cache import never_cache
 
@@ -25,14 +27,9 @@ def index(request):
 
 @never_cache
 def testArticle(request):
-    articles = testParser.parseXml(os.path.join(settings.PROJECT_ROOT,'test_ANN.xml'))
-    article_list = []
-    with open(os.path.join(settings.PROJECT_ROOT,'articles.txt'),"a") as f:
-        for article in articles:
-            if not(article.content in article_list):
-                article_list.append("<h2>{}</h2>".format(article.title)+article.content)
-                f.write("{}\n".format("<h2>{}</h2>".format(article.title)+article.content))
+    parser.parseRss(os.path.join(settings.PROJECT_ROOT,'test_ANN.xml'))
+    articles = RssObject.objects.all()[:25]
     template = loader.get_template('rssReader/articles.html')
-    context = {"article_list":article_list}
-    print(article_list)
+    context = {"article_list":articles}
+    print("Successful")
     return HttpResponse(template.render(context,request))

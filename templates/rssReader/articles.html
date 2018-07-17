@@ -4,7 +4,11 @@
 {% if article_list %}
     {% for article in article_list %}
         <div class="article">
-          {% autoescape off %}{{article}}{% endautoescape %}
+          {% autoescape off %}
+          <h2>{{article.title}}</h2>
+          <img src={{article.splash}} alt="Splash Image">
+          {{article.content}}
+          {% endautoescape %}
         </div>
     {% endfor %}
 {% else %}
