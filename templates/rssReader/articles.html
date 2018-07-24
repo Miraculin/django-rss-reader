@@ -6,7 +6,9 @@
         <div class="article">
           {% autoescape off %}
           <h2>{{article.title}}</h2>
+          {% if article.splash != "http://localhost"%}
           <img src={{article.splash}} alt="Splash Image">
+          {% endif %}
           {{article.content}}
           {% endautoescape %}
         </div>

@@ -12,7 +12,7 @@ from rssReader.models import Channel,RssObject
 
 from django.views.decorators.cache import never_cache
 
-# Create your views here.
+import time
 
 def current_datetime(request):
     now = datetime.datetime.now()
@@ -27,9 +27,13 @@ def index(request):
 
 @never_cache
 def testArticle(request):
+    print(time.perf_counter())
     parser.parseRss(os.path.join(settings.PROJECT_ROOT,'test_ANN.xml'))
+    print(time.perf_counter())
     articles = RssObject.objects.all()[:25]
+    print(time.perf_counter())
     template = loader.get_template('rssReader/articles.html')
+    print(time.perf_counter())
     context = {"article_list":articles}
     print("Successful")
     return HttpResponse(template.render(context,request))
