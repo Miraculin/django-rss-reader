@@ -1,8 +1,9 @@
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
+
 urlpatterns = [
-    url(r"^date/", views.current_datetime, name="date"),
-    url(r"^$", views.index, name="index"),
-    url(r"^article/", views.testArticle, name="article"),
+    path("date/", views.current_datetime, name="date"),
+    path("", views.index, name="index"),
+    path("article/", views.testArticle, name="article"),
 ]
