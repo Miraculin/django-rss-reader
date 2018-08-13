@@ -81,16 +81,14 @@ def parseSplashImage(doc, channelTitle):
     urlOpen = request.build_opener()
     tree = lxml.html.parse(urlOpen.open(doc))
     root = tree.getroot()
+    match = root.find(r".//img")
     if "Anime News Network" in channelTitle:
         ANN_body = root.find_class("KonaBody")[0]
         match = ANN_body.find(r".//img")
-        if match!=None:
-            image = html_utils.imageNetlink(doc,match)
-            return image
-        for p in root.findall(r".//p"):
-            for img in p.findall(r".//img"):
-                image = html_utils.imageNetlink(doc, img)
-                return image
-    else:
-        image = root.find(r".//img")
+    if match!=None:
+        image = html_utils.imageNetlink(doc,match)
         return image
+    for p in root.findall(r".//p"):
+        for img in p.findall(r".//img"):
+            image = html_utils.imageNetlink(doc, img)
+            return image

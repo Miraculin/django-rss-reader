@@ -27,8 +27,9 @@ def index(request):
 @never_cache
 def testArticle(request):
     print(time.perf_counter())
-    #feedManager.resetDatabase()
+    feedManager.resetDatabase()
     feedManager.updateFeeds()
+    feedManager.addFeed('http://www.feedforall.com/sample.xml')
     print(time.perf_counter())
     articles = RssObject.objects.all()#[:25][::-1]
     print(time.perf_counter())

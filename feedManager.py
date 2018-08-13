@@ -12,11 +12,11 @@ def updateFeeds():
 
 def addFeed(feedURL):
     #TODO: add feed urls
-    for url in Channel.objects.value_list("feedURL"):
-        if feedURL==url:
-            return "Feed already added"
-    request.urlretrieve(feedURL, temp.xml)
-    parse.parseRss(temp.xml,feedURL)
+    #for url in Channel.objects.value_list("feedURL"):
+    #    if feedURL==url:
+    #        return "Feed already added"
+    result = request.urlretrieve(feedURL)
+    parser.parseRss(result[0],feedURL)
 
 def removeFeed(feedURL):
     feeds=Channel.objects.filter(feedURL=feedURL)
