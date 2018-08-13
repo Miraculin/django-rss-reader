@@ -1,3 +1,4 @@
+@import "normalize.css"
 body{
   margin: 0;
   padding: 0;
@@ -31,8 +32,6 @@ body{
 
 p{
     margin: 1
-    -webkit-margin-after:0;
-    -webkit-margin-before:0;
     line-height: normal;
 }
 .rss-wrap{

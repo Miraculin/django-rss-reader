@@ -8,13 +8,12 @@ from . import html_utils
 from datetime import datetime
 from rssReader.models import Channel,RssObject
 import bleach
-from PIL import Image
+from django.core.files import File
 
 testDoc = '/PROJECT_ROOT/test_ars.xml'
 testDoc2 = '/PROJECT_ROOT/test_ANN.xml'
 
 def parseRss(doc, feedURL = None):
-    #TODO Leverage Django's ImageField
     tree = etree.parse(doc)
     root = tree.getroot()
     ns = root.nsmap
@@ -47,16 +46,12 @@ def parseRss(doc, feedURL = None):
         else:
             content = parseHtmlContent(link,channelObj.title)
         imglink=parseSplashImage(link,channelObj.title)
-        if imglink == None:
-            img = None
-            imglink="s"
-        #else:
-        #    request.urlretrieve(imglink, "temp.png")
-        #    img = Image.open("temp.png")
-        #article.splash.save(title+" splash", img)
+        if imglink != None:
+            result=request.urlretrieve(imglink)
+            img = File(open(result[0],mode='rb'))
+            article.splash.save(title+" splash", img)
         fields = {'desc': desc,
                   'content':content,
-                  'splash':imglink
                   }
         for(k,v) in fields.items():
             setattr(article, k, v)
